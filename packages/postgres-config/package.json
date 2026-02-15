@@ -1,0 +1,17 @@
+{
+  "name": "@repo/postgres-config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.3.0",
+    "@prisma/adapter-pg": "^7.3.0",
+    "pg": "^8.18.0",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "prisma": "^7.3.0"
+  }
+}

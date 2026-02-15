@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  profile Profile?
+
+  gamesAsPlayer1 GameSession[] @relation("Player1")
+  gamesAsPlayer2 GameSession[] @relation("Player2")
+}
+
+model Profile {
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  username String
+  bio      String?
+  gender   String?
+  age      Int?
+  rating   Int     @default(1200)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model GameSession {
+  id        String     @id @default(cuid())
+  player1Id String
+  player2Id String?
+  status    GameStatus
+  winnerId  String?
+  createdAt DateTime   @default(now())
+
+  player1 User  @relation("Player1", fields: [player1Id], references: [id])
+  player2 User? @relation("Player2", fields: [player2Id], references: [id])
+}
+
+enum GameStatus {
+  WAITING
+  ACTIVE
+  FINISHED
+}
