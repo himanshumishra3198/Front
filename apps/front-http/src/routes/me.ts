@@ -16,3 +16,14 @@ meRouter.get("/", async (c) => {
 
   return c.json(profile);
 });
+
+meRouter.patch("/", async (c) => {
+  const userId = c.get("userId");
+  const body = await c.req.json();
+  const updated = await db.profile.update({
+    where: { userId: userId },
+    data: { username: body.username },
+  });
+
+  return c.json(updated);
+});

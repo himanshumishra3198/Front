@@ -71,16 +71,17 @@ app.post("/signup", async (c) => {
         },
       });
 
-      return c.json(
-        {
-          user: {
-            id: newUser.id,
-            email: newUser.email,
-          },
-        },
-        201,
-      );
+      return newUser;
     });
+    return c.json(
+      {
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+      },
+      201,
+    );
   } catch (error) {
     console.log(error);
     return c.json({ error: "User creation failed" }, 500);
