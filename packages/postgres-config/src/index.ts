@@ -13,3 +13,5 @@ const adapter = new PrismaPg(pool);
 export const db = new PrismaClient({
   adapter,
 });
+
+export * from "../generated/prisma/client.ts";

@@ -35,16 +35,25 @@ model GameSession {
   id        String     @id @default(cuid())
   player1Id String
   player2Id String?
+  gameType GameType
   status    GameStatus
   winnerId  String?
   createdAt DateTime   @default(now())
 
   player1 User  @relation("Player1", fields: [player1Id], references: [id])
   player2 User? @relation("Player2", fields: [player2Id], references: [id])
+
 }
 
 enum GameStatus {
   WAITING
   ACTIVE
   FINISHED
+}
+
+enum GameType {
+  CHESS
+  CHECKERS
+  BLITZ_CHESS
+  MEMORY_MATCH
 }
