@@ -36,6 +36,9 @@ app.get("/ws/:gameId", authMiddleware, (c) => {
       userId,
     },
   });
+  if (upgraded) {
+    return new Response(null); // ← REQUIRED
+  }
 
   if (!upgraded) return c.text("Upgrade failed", 500);
 });

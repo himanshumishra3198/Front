@@ -19,7 +19,7 @@ class Matchmaker {
 
   join(gameType: GameType, player: QueuePlayer) {
     const queue = this.getQueue(gameType);
-
+    console.log(queue);
     if (queue.find((p) => p.userId === player.userId)) return;
 
     queue.push(player);
