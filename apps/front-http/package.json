@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@repo/postgres-config": "workspace:*",
+    "bcryptjs": "^3.0.3",
     "chess.js": "^1.4.0",
     "hono": "^4.0.0",
     "jsonwebtoken": "^9.0.2",
