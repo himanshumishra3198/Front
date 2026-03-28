@@ -1,242 +1,354 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui";
 import { Button } from "@repo/ui";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@repo/ui";
 import { Avatar, AvatarFallback } from "@repo/ui";
-import { Gamepad2, Users, Trophy, ArrowRight, Clock } from "lucide-react";
+import { Gamepad2, Heart, Zap, MessageSquare, Play } from "lucide-react";
+
+const mockActiveGames = [
+  {
+    id: 1,
+    opponent: "Sarah Chen",
+    initials: "SC",
+    status: "Your Move",
+    timeRemaining: "2h",
+    rating: 1650,
+  },
+  {
+    id: 2,
+    opponent: "Alex Rivera",
+    initials: "AR",
+    status: "Waiting",
+    timeRemaining: "5h",
+    rating: 1480,
+  },
+];
+
+const mockSuggestedPlayers = [
+  {
+    id: 1,
+    name: "Emma Watson",
+    initials: "EW",
+    rating: 1620,
+    online: true,
+  },
+  {
+    id: 2,
+    name: "Jordan Park",
+    initials: "JP",
+    rating: 1550,
+    online: true,
+  },
+  {
+    id: 3,
+    name: "Casey Morgan",
+    initials: "CM",
+    rating: 1480,
+    online: false,
+  },
+];
+
+const mockActivity = [
+  {
+    id: 1,
+    type: "compliment",
+    message: "Alex sent you a compliment",
+    time: "2h ago",
+  },
+  {
+    id: 2,
+    type: "unlock",
+    message: "You unlocked chat with Maya",
+    time: "5h ago",
+  },
+  {
+    id: 3,
+    type: "match",
+    message: "New match with Jordan!",
+    time: "1d ago",
+  },
+];
+
+const mockOnlineUsers = [
+  { id: 1, name: "Sarah Chen", initials: "SC" },
+  { id: 2, name: "Emma Watson", initials: "EW" },
+  { id: 3, name: "Jordan Park", initials: "JP" },
+  { id: 4, name: "Casey Morgan", initials: "CM" },
+];
 
 export default function DashboardPage() {
+  const [matchState, setMatchState] = useState<"idle" | "searching" | "found">(
+    "idle",
+  );
+
+  const handleFindMatch = () => {
+    setMatchState("searching");
+    setTimeout(() => setMatchState("found"), 2000);
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Welcome section */}
-      <div>
-        <h1 className="font-display text-2xl font-bold md:text-3xl">
-          Welcome back, John
-        </h1>
-        <p className="mt-1 text-muted-foreground">Ready to make some moves?</p>
-      </div>
-
-      {/* Stats row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Gamepad2} label="Games Played" value="24" />
-        <StatCard icon={Users} label="Matches" value="8" />
-        <StatCard icon={Trophy} label="Win Rate" value="67%" />
-        <StatCard icon={Clock} label="Avg. Game Time" value="12m" />
-      </div>
-
-      {/* Main content grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Play Chess card */}
-        <Card className="lg:col-span-2 border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5">
+    <div className="grid gap-6 xl:grid-cols-3">
+      {/* Main Content - CENTER */}
+      <div className="xl:col-span-2 space-y-6">
+        {/* A) Quick Match Card */}
+        <Card className="border-0 bg-gradient-to-br from-primary/20 to-primary/5 overflow-hidden">
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 font-display text-xl">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/20">
-                <ChessIcon className="size-6 text-primary" />
+            <CardTitle className="font-display text-2xl flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/30">
+                <Gamepad2 className="size-6 text-primary" />
               </div>
-              Start Playing Chess
+              Play Chess
             </CardTitle>
-            <CardDescription>
-              Find a match and start connecting through gameplay
-            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Button className="flex-1" asChild>
-                <Link href="/dashboard/games">
-                  Find a Match
-                  <ArrowRight className="ml-2 size-4" />
-                </Link>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Find a match and start connecting through gameplay
+            </p>
+
+            {matchState === "idle" && (
+              <Button size="lg" className="w-full" onClick={handleFindMatch}>
+                Find Match
               </Button>
-              <Button variant="outline" className="flex-1">
-                Practice Mode
+            )}
+
+            {matchState === "searching" && (
+              <Button size="lg" disabled className="w-full">
+                <span className="animate-spin mr-2">⌛</span>
+                Searching…
               </Button>
+            )}
+
+            {matchState === "found" && (
+              <div className="space-y-3 bg-background/50 p-4 rounded-lg border border-primary/20">
+                <p className="font-medium text-primary">Match Found!</p>
+                <div className="flex items-center gap-3">
+                  <Avatar className="size-12 border-2 border-primary/30">
+                    <AvatarFallback className="bg-primary/20 text-primary font-bold">
+                      EW
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">Emma Watson</p>
+                    <p className="text-sm text-muted-foreground">
+                      Rating: 1620
+                    </p>
+                  </div>
+                </div>
+                <Button className="w-full" variant="default">
+                  <Play className="size-4 mr-2" />
+                  Start Game
+                </Button>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setMatchState("idle")}
+                >
+                  Skip
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* B) Active Games Section */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="font-display text-xl">Active Games</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockActiveGames.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                No active games. Find a match to get started!
+              </p>
+            ) : (
+              mockActiveGames.map((game) => (
+                <div
+                  key={game.id}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-border/30 hover:border-primary/30 transition-colors"
+                >
+                  <Avatar className="size-10 border border-primary/20">
+                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-bold">
+                      {game.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium">{game.opponent}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {game.status} • {game.timeRemaining}
+                    </p>
+                  </div>
+                  <Button size="sm" variant="ghost">
+                    Resume
+                  </Button>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        {/* C) Connection Progress Card */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="font-display text-xl">
+              Connection Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium">Connection Level</p>
+                <p className="text-lg font-bold text-primary">Level 2</p>
+              </div>
+              <div className="w-full bg-background/50 rounded-full h-2.5">
+                <div
+                  className="bg-gradient-to-r from-primary to-primary/60 h-2.5 rounded-full transition-all"
+                  style={{ width: "65%" }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                1,300 XP to Level 3
+              </p>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium mb-3">Unlockable Features</p>
+              <div className="space-y-2">
+                <FeatureItem
+                  icon={MessageSquare}
+                  label="Compliments"
+                  unlocked
+                />
+                <FeatureItem icon={Zap} label="Voice Notes" unlocked={false} />
+                <FeatureItem
+                  icon={Heart}
+                  label="Photo Exchange"
+                  unlocked={false}
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick actions */}
-        <Card>
+        {/* D) Suggested Players Section */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="font-display text-lg">
-              Quick Actions
+            <CardTitle className="font-display text-xl">
+              Suggested Players
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link href="/dashboard/matches">
-                <Users className="mr-3 size-4" />
-                View Matches
-              </Link>
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link href="/dashboard/messages">
-                <MessageIcon className="mr-3 size-4" />
-                Messages
-              </Link>
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link href="/dashboard/profile">
-                <UserIcon className="mr-3 size-4" />
-                Edit Profile
-              </Link>
-            </Button>
+            {mockSuggestedPlayers.map((player) => (
+              <div
+                key={player.id}
+                className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-border/30 hover:border-primary/30 transition-colors"
+              >
+                <div className="relative">
+                  <Avatar className="size-10 border border-primary/20">
+                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-bold">
+                      {player.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  {player.online && (
+                    <div className="absolute bottom-0 right-0 size-2.5 bg-green-500 rounded-full border border-background" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium">{player.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Rating: {player.rating}
+                  </p>
+                </div>
+                <Button size="sm" variant="outline">
+                  Challenge
+                </Button>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent matches */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="font-display text-lg">
-              Recent Matches
-            </CardTitle>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard/matches">View All</Link>
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentMatches.map((match) => (
+      {/* RIGHT SOCIAL PANEL */}
+      <div className="hidden xl:flex xl:flex-col gap-6">
+        {/* A) Online Users List */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="font-display text-lg">Online Users</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockOnlineUsers.map((user) => (
               <div
-                key={match.id}
-                className="flex items-center gap-4 rounded-lg border border-border/50 bg-muted/30 p-4 transition-colors hover:bg-muted/50"
+                key={user.id}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-background/50 transition-colors"
               >
-                <Avatar className="size-12">
-                  <AvatarFallback className="bg-primary/20 text-primary">
-                    {match.initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <p className="font-medium">{match.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {match.status}
-                  </p>
+                <div className="relative">
+                  <Avatar className="size-8">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                      {user.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full border border-background" />
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-primary">
-                    {match.connectionLevel}
-                  </p>
+                <p className="text-sm font-medium flex-1">{user.name}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* B) Activity Feed */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="font-display text-lg">
+              Activity Feed
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockActivity.map((activity) => (
+              <div
+                key={activity.id}
+                className="flex gap-3 p-3 rounded-lg hover:bg-background/50 transition-colors border-l-2 border-primary/30"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{activity.message}</p>
                   <p className="text-xs text-muted-foreground">
-                    {match.lastActive}
+                    {activity.time}
                   </p>
                 </div>
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
 
-function StatCard({
+function FeatureItem({
   icon: Icon,
   label,
-  value,
+  unlocked,
 }: {
   icon: React.ElementType;
   label: string;
-  value: string;
+  unlocked: boolean;
 }) {
   return (
-    <Card className="border-border/50">
-      <CardContent className="flex items-center gap-4 p-6">
-        <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-          <Icon className="size-6 text-primary" />
-        </div>
-        <div>
-          <p className="text-2xl font-bold">{value}</p>
-          <p className="text-sm text-muted-foreground">{label}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-const recentMatches = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    initials: "SC",
-    status: "3 games played together",
-    connectionLevel: "Level 2",
-    lastActive: "2h ago",
-  },
-  {
-    id: 2,
-    name: "Alex Rivera",
-    initials: "AR",
-    status: "Waiting for your move",
-    connectionLevel: "Level 1",
-    lastActive: "5h ago",
-  },
-  {
-    id: 3,
-    name: "Jordan Kim",
-    initials: "JK",
-    status: "New match!",
-    connectionLevel: "Level 1",
-    lastActive: "1d ago",
-  },
-];
-
-function ChessIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <div
+      className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+        unlocked
+          ? "bg-primary/10 border-primary/30"
+          : "bg-muted/30 border-border/30"
+      }`}
     >
-      <path d="M8 16l-1.447.724a1 1 0 0 0-.553.894V20h12v-2.382a1 1 0 0 0-.553-.894L16 16" />
-      <path d="M8.5 14h7" />
-      <path d="M9 10h6" />
-      <path d="M12 4v2" />
-      <path d="M10 6h4" />
-      <path d="M10 6a4 4 0 0 0 0 8h4a4 4 0 0 0 0-8" />
-    </svg>
-  );
-}
-
-function MessageIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function UserIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
+      <Icon
+        className={`size-5 ${
+          unlocked ? "text-primary" : "text-muted-foreground"
+        }`}
+      />
+      <span className="text-sm font-medium">{label}</span>
+      <span className="ml-auto text-xs font-semibold">
+        {unlocked ? "✓ Unlocked" : "Locked"}
+      </span>
+    </div>
   );
 }

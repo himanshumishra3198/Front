@@ -8,7 +8,7 @@ import { Button } from "@repo/ui";
 import { Input } from "@repo/ui";
 import { AuthFormWrapper } from "../../components/features/auth-form-wrapper";
 import { Field, FieldGroup, FieldLabel } from "@repo/ui";
-
+import { X } from "lucide-react";
 export default function SignupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +18,7 @@ export default function SignupPage() {
   >("unknown");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const isEmailValid = (value: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -84,137 +85,185 @@ export default function SignupPage() {
       return;
     }
 
-    setIsLoading(true);
+    setError("");
 
-    // Simulate signup - in production, this would call an auth API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+      const response = await axios.post(`${backendUrl}/auth/signup`, {
+        email,
+        password,
+      });
 
-    setIsLoading(false);
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+
+      router.push("/dashboard");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          err.response?.data?.error || "Signup failed. Please try again.",
+        );
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+      return;
+    } finally {
+      setIsLoading(false);
+    }
     router.push("/dashboard");
   };
 
   return (
-    <AuthFormWrapper
-      title="Create an account"
-      description="Start your journey to meaningful connections"
-      footer={
-        <>
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="font-medium text-primary hover:underline"
-          >
-            Sign in
-          </Link>
-        </>
-      }
-    >
-      <form onSubmit={handleSubmit}>
-        <FieldGroup>
-          <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailStatus("unknown");
-              }}
-              onBlur={(e) => checkEmailAvailability(e.target.value)}
-              required
-              autoComplete="email"
-            />
-            <p className="mt-1 text-xs">
-              {emailStatus === "checking" && (
-                <span className="text-muted-foreground">
-                  Checking email availability...
-                </span>
-              )}
-              {emailStatus === "available" && (
-                <span className="text-green-500">✔️ Email is available</span>
-              )}
-              {emailStatus === "taken" && (
-                <span className="text-red-500">❌ Email is already in use</span>
-              )}
-              {emailStatus === "error" && (
-                <span className="text-red-500">
-                  ❌ Unable to verify email right now
-                </span>
-              )}
-              {email && !isEmailValid(email) && (
-                <span className="text-red-500">
-                  ❌ Enter a valid email address
-                </span>
-              )}
-            </p>
-          </Field>
+    <div className="relative min-h-screen">
+      {/* Close Button */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => router.push("/")}
+        className="absolute right-4 top-4 z-50"
+        aria-label="Close"
+      >
+        <X className="h-5 w-5" />
+      </Button>
 
-          <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              minLength={8}
-            />
-            <p className="mt-1 text-xs">
-              {password && password.length < 8 && (
-                <span className="text-red-500">
-                  ❌ Password must be at least 8 characters
-                </span>
-              )}
-              {password && password.length >= 8 && (
-                <span className="text-green-500">
-                  ✔️ Password is strong enough
-                </span>
-              )}
-            </p>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-            />
-            <p className="mt-1 text-xs">
-              {confirmPassword && !passwordsMatch && (
-                <span className="text-red-500">❌ Passwords do not match</span>
-              )}
-              {confirmPassword && passwordsMatch && (
-                <span className="text-green-500">✔️ Passwords match</span>
-              )}
-            </p>
-          </Field>
-
-          <p className="text-xs text-muted-foreground">
-            By signing up, you agree to our{" "}
-            <Link href="#" className="text-primary hover:underline">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="#" className="text-primary hover:underline">
-              Privacy Policy
+      <AuthFormWrapper
+        title="Create an account"
+        description="Start your journey to meaningful connections"
+        footer={
+          <>
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-medium text-primary hover:underline"
+            >
+              Sign in
             </Link>
-            .
-          </p>
+          </>
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailStatus("unknown");
+                }}
+                onBlur={(e) => checkEmailAvailability(e.target.value)}
+                required
+                autoComplete="email"
+              />
 
-          <Button type="submit" className="w-full" disabled={!canSubmit}>
-            {isLoading ? "Creating account..." : "Create Account"}
-          </Button>
-        </FieldGroup>
-      </form>
-    </AuthFormWrapper>
+              <p className="mt-1 text-xs">
+                {emailStatus === "checking" && (
+                  <span className="text-muted-foreground">
+                    Checking email availability...
+                  </span>
+                )}
+                {emailStatus === "available" && (
+                  <span className="text-green-500">✔️ Email is available</span>
+                )}
+                {emailStatus === "taken" && (
+                  <span className="text-red-500">
+                    ❌ Email is already in use
+                  </span>
+                )}
+                {emailStatus === "error" && (
+                  <span className="text-red-500">
+                    ❌ Unable to verify email right now
+                  </span>
+                )}
+                {email && !isEmailValid(email) && (
+                  <span className="text-red-500">
+                    ❌ Enter a valid email address
+                  </span>
+                )}
+              </p>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                minLength={8}
+              />
+
+              <p className="mt-1 text-xs">
+                {password && password.length < 8 && (
+                  <span className="text-red-500">
+                    ❌ Password must be at least 8 characters
+                  </span>
+                )}
+                {password && password.length >= 8 && (
+                  <span className="text-green-500">
+                    ✔️ Password is strong enough
+                  </span>
+                )}
+              </p>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="confirmPassword">
+                Confirm Password
+              </FieldLabel>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+              />
+
+              <p className="mt-1 text-xs">
+                {confirmPassword && !passwordsMatch && (
+                  <span className="text-red-500">
+                    ❌ Passwords do not match
+                  </span>
+                )}
+                {confirmPassword && passwordsMatch && (
+                  <span className="text-green-500">✔️ Passwords match</span>
+                )}
+              </p>
+            </Field>
+
+            <p className="text-xs text-muted-foreground">
+              By signing up, you agree to our{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+
+            {error && (
+              <p className="text-sm text-red-500 bg-red-50 p-3 rounded">
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={!canSubmit}>
+              {isLoading ? "Creating account..." : "Create Account"}
+            </Button>
+          </FieldGroup>
+        </form>
+      </AuthFormWrapper>
+    </div>
   );
 }
