@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth";
 import dashboardRoutes from "./routes/dashboard";
 import { meRouter } from "./routes/me";
 import { matchmakingRouter } from "./routes/matchmaking";
+import { onboardingRouter } from "./routes/onboarding";
 
 export const app = new Hono();
 
@@ -23,3 +24,4 @@ app.route("/auth", authRoutes);
 app.route("/dashboard", dashboardRoutes);
 app.route("/me", meRouter);
 app.route("/matchmaking", matchmakingRouter);
+app.route("/onboarding", onboardingRouter);

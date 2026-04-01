@@ -51,12 +51,16 @@ app.post("/login", async (c) => {
   }
 
   const token = signToken({ userId: user.id });
+  const profile = await db.profile.findUnique({
+    where: { userId: user.id },
+  });
 
   return c.json({
     token,
     user: {
       id: user.id,
       email: user.email,
+      username: profile?.username,
     },
   });
 });
@@ -81,22 +85,11 @@ app.post("/signup", async (c) => {
     // ✅ hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await db.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-        },
-      });
-
-      await tx.profile.create({
-        data: {
-          userId: newUser.id,
-          username: email.split("@")[0],
-        },
-      });
-
-      return newUser;
+    const user = await db.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      },
     });
 
     // ✅ AUTO LOGIN

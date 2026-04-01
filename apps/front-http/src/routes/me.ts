@@ -17,13 +17,31 @@ meRouter.get("/", async (c) => {
   return c.json(profile);
 });
 
-meRouter.patch("/", async (c) => {
+meRouter.patch("/update-username", async (c) => {
   const userId = c.get("userId");
   const body = await c.req.json();
-  const updated = await db.profile.update({
-    where: { userId: userId },
-    data: { username: body.username },
-  });
+  try {
+    const updated = await db.profile.update({
+      where: { userId: userId },
+      data: { username: body.username },
+    });
+    return c.json(updated);
+  } catch (error) {
+    console.error("Error updating username:", error);
+    return c.json({ error: "Failed to update username" }, 500);
+  }
+});
 
-  return c.json(updated);
+meRouter.post("/create-userprofile", async (c) => {
+  const userId = c.get("userId");
+  const body = await c.req.json();
+  try {
+    const updated = await db.profile.create({
+      data: { username: body.username, userId },
+    });
+    return c.json(updated);
+  } catch (error) {
+    console.error("Error creating user profile:", error);
+    return c.json({ error: "Failed to create user profile" }, 500);
+  }
 });

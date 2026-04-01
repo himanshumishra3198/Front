@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,8 +9,11 @@ import { Label } from "@repo/ui";
 import { AuthFormWrapper } from "../../components/features/auth-form-wrapper";
 import { Field, FieldGroup, FieldLabel } from "@repo/ui";
 import { X } from "lucide-react";
+import { useAuthStore } from "../../stores/auth.store";
+
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,24 +36,12 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-      const response = await axios.post(`${backendUrl}/auth/login`, {
-        email,
-        password,
-      });
-
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-
+      await login(email, password);
       router.push("/dashboard");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.error || "Login failed. Please try again.",
-        );
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
+      const errorMessage =
+        err instanceof Error ? err.message : "Login failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

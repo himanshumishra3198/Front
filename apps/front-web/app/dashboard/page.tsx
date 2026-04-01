@@ -88,60 +88,76 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-3">
+    <div className="grid gap-8 xl:grid-cols-3">
       {/* Main Content - CENTER */}
-      <div className="xl:col-span-2 space-y-6">
+      <div className="xl:col-span-2 space-y-8">
+        {/* Welcome section with proper spacing */}
+        <div className="mb-6">
+          <h1 className="font-display text-4xl font-bold tracking-tight">
+            Welcome back, John
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground font-medium">
+            Ready to level up your connections?
+          </p>
+        </div>
+
         {/* A) Quick Match Card */}
-        <Card className="border-0 bg-gradient-to-br from-primary/20 to-primary/5 overflow-hidden">
-          <CardHeader>
-            <CardTitle className="font-display text-2xl flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/30">
+        <Card className="border border-primary/20 bg-gradient-to-br from-primary/15 via-card to-card/80 overflow-hidden shadow-lg shadow-primary/5 hover:shadow-primary/10 transition-shadow">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-2xl font-bold tracking-tight flex items-center gap-3">
+              <div className="flex size-11 items-center justify-center rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 shadow-lg shadow-primary/20">
                 <Gamepad2 className="size-6 text-primary" />
               </div>
               Play Chess
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
+          <CardContent className="space-y-5">
+            <p className="text-sm text-muted-foreground font-medium">
               Find a match and start connecting through gameplay
             </p>
 
             {matchState === "idle" && (
-              <Button size="lg" className="w-full" onClick={handleFindMatch}>
+              <Button
+                size="lg"
+                className="w-full font-semibold shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all duration-300 bg-gradient-to-r from-primary to-primary/90"
+                onClick={handleFindMatch}
+              >
                 Find Match
               </Button>
             )}
 
             {matchState === "searching" && (
-              <Button size="lg" disabled className="w-full">
+              <Button size="lg" disabled className="w-full font-semibold">
                 <span className="animate-spin mr-2">⌛</span>
                 Searching…
               </Button>
             )}
 
             {matchState === "found" && (
-              <div className="space-y-3 bg-background/50 p-4 rounded-lg border border-primary/20">
-                <p className="font-medium text-primary">Match Found!</p>
-                <div className="flex items-center gap-3">
-                  <Avatar className="size-12 border-2 border-primary/30">
-                    <AvatarFallback className="bg-primary/20 text-primary font-bold">
+              <div className="space-y-3 bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-primary/20 shadow-lg shadow-primary/10">
+                <p className="text-sm font-semibold text-primary">
+                  Match Found!
+                </p>
+                <div className="flex items-center gap-3 bg-background/50 p-3 rounded-lg">
+                  <Avatar className="size-12 border-2 border-primary/40 shadow-lg shadow-primary/20">
+                    <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-primary font-bold">
                       EW
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">Emma Watson</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-semibold text-sm">Emma Watson</p>
+                    <p className="text-xs text-muted-foreground">
                       Rating: 1620
                     </p>
                   </div>
                 </div>
-                <Button className="w-full" variant="default">
+                <Button className="w-full font-semibold shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all bg-gradient-to-r from-primary to-primary/90">
                   <Play className="size-4 mr-2" />
                   Start Game
                 </Button>
                 <Button
-                  className="w-full"
-                  variant="outline"
+                  className="w-full font-medium text-foreground/80 hover:text-foreground"
+                  variant="ghost"
                   onClick={() => setMatchState("idle")}
                 >
                   Skip
@@ -152,33 +168,39 @@ export default function DashboardPage() {
         </Card>
 
         {/* B) Active Games Section */}
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="font-display text-xl">Active Games</CardTitle>
+        <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-lg font-bold tracking-tight">
+              Active Games
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {mockActiveGames.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
+              <p className="text-muted-foreground text-center py-8 text-sm">
                 No active games. Find a match to get started!
               </p>
             ) : (
               mockActiveGames.map((game) => (
                 <div
                   key={game.id}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-border/30 hover:border-primary/30 transition-colors"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-r from-background/80 to-background/40 border border-border/50 hover:border-primary/40 transition-all duration-200 shadow-sm hover:shadow-primary/10"
                 >
-                  <Avatar className="size-10 border border-primary/20">
-                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-bold">
+                  <Avatar className="size-10 border border-primary/30 shadow-sm shadow-primary/20">
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-sm font-bold">
                       {game.initials}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium">{game.opponent}</p>
+                    <p className="font-semibold text-sm">{game.opponent}</p>
                     <p className="text-xs text-muted-foreground">
                       {game.status} • {game.timeRemaining}
                     </p>
                   </div>
-                  <Button size="sm" variant="ghost">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
+                  >
                     Resume
                   </Button>
                 </div>
@@ -188,31 +210,31 @@ export default function DashboardPage() {
         </Card>
 
         {/* C) Connection Progress Card */}
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="font-display text-xl">
+        <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-lg font-bold tracking-tight">
               Connection Progress
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">Connection Level</p>
-                <p className="text-lg font-bold text-primary">Level 2</p>
+          <CardContent className="space-y-8">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold">Connection Level</p>
+                <p className="text-base font-bold text-primary">Level 2</p>
               </div>
-              <div className="w-full bg-background/50 rounded-full h-2.5">
+              <div className="w-full bg-background/50 rounded-full h-3 overflow-hidden shadow-inner">
                 <div
-                  className="bg-gradient-to-r from-primary to-primary/60 h-2.5 rounded-full transition-all"
+                  className="bg-gradient-to-r from-primary via-primary to-primary/70 h-3 rounded-full transition-all duration-500 shadow-lg shadow-primary/40"
                   style={{ width: "65%" }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground font-medium">
                 1,300 XP to Level 3
               </p>
             </div>
 
             <div>
-              <p className="text-sm font-medium mb-3">Unlockable Features</p>
+              <p className="text-sm font-semibold mb-4">Unlockable Features</p>
               <div className="space-y-2">
                 <FeatureItem
                   icon={MessageSquare}
@@ -231,9 +253,9 @@ export default function DashboardPage() {
         </Card>
 
         {/* D) Suggested Players Section */}
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="font-display text-xl">
+        <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-lg font-bold tracking-tight">
               Suggested Players
             </CardTitle>
           </CardHeader>
@@ -241,25 +263,29 @@ export default function DashboardPage() {
             {mockSuggestedPlayers.map((player) => (
               <div
                 key={player.id}
-                className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-border/30 hover:border-primary/30 transition-colors"
+                className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-r from-background/80 to-background/40 border border-border/50 hover:border-primary/40 transition-all duration-200 shadow-sm hover:shadow-primary/10"
               >
                 <div className="relative">
-                  <Avatar className="size-10 border border-primary/20">
-                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-bold">
+                  <Avatar className="size-10 border border-primary/30 shadow-sm shadow-primary/20">
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-sm font-bold">
                       {player.initials}
                     </AvatarFallback>
                   </Avatar>
                   {player.online && (
-                    <div className="absolute bottom-0 right-0 size-2.5 bg-green-500 rounded-full border border-background" />
+                    <div className="absolute bottom-0 right-0 size-2.5 bg-emerald-500 rounded-full border-2 border-background shadow-lg shadow-emerald-500/50" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium">{player.name}</p>
+                  <p className="font-semibold text-sm">{player.name}</p>
                   <p className="text-xs text-muted-foreground">
                     Rating: {player.rating}
                   </p>
                 </div>
-                <Button size="sm" variant="outline">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-primary hover:text-primary hover:bg-primary/10 border-primary/30 font-medium"
+                >
                   Challenge
                 </Button>
               </div>
@@ -269,48 +295,54 @@ export default function DashboardPage() {
       </div>
 
       {/* RIGHT SOCIAL PANEL */}
-      <div className="hidden xl:flex xl:flex-col gap-6">
+      <div className="hidden xl:flex xl:flex-col gap-8">
         {/* A) Online Users List */}
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="font-display text-lg">Online Users</CardTitle>
+        <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-base font-bold tracking-tight">
+              Online Users
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {mockOnlineUsers.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-background/50 transition-colors"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-background/40 transition-colors duration-200"
               >
                 <div className="relative">
-                  <Avatar className="size-8">
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                  <Avatar className="size-8 border border-primary/20">
+                    <AvatarFallback className="bg-gradient-to-br from-primary/15 to-primary/5 text-primary text-xs font-bold">
                       {user.initials}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full border border-background" />
+                  <div className="absolute bottom-0 right-0 size-2 bg-emerald-500 rounded-full border border-background shadow-lg shadow-emerald-500/40" />
                 </div>
-                <p className="text-sm font-medium flex-1">{user.name}</p>
+                <p className="text-xs font-semibold flex-1 truncate">
+                  {user.name}
+                </p>
               </div>
             ))}
           </CardContent>
         </Card>
 
         {/* B) Activity Feed */}
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="font-display text-lg">
+        <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">
+          <CardHeader className="pb-5">
+            <CardTitle className="font-display text-base font-bold tracking-tight">
               Activity Feed
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {mockActivity.map((activity) => (
               <div
                 key={activity.id}
-                className="flex gap-3 p-3 rounded-lg hover:bg-background/50 transition-colors border-l-2 border-primary/30"
+                className="flex gap-2 p-3 rounded-lg hover:bg-background/40 transition-colors duration-200 border-l-2 border-primary/25"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{activity.message}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs font-semibold line-clamp-2">
+                    {activity.message}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
                     {activity.time}
                   </p>
                 </div>
@@ -334,20 +366,30 @@ function FeatureItem({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+      className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${
         unlocked
-          ? "bg-primary/10 border-primary/30"
-          : "bg-muted/30 border-border/30"
+          ? "bg-gradient-to-r from-primary/15 to-primary/5 border-primary/30 shadow-sm shadow-primary/10"
+          : "bg-background/40 border-border/30"
       }`}
     >
       <Icon
-        className={`size-5 ${
-          unlocked ? "text-primary" : "text-muted-foreground"
+        className={`size-5 flex-shrink-0 ${
+          unlocked ? "text-primary" : "text-muted-foreground/60"
         }`}
       />
-      <span className="text-sm font-medium">{label}</span>
-      <span className="ml-auto text-xs font-semibold">
-        {unlocked ? "✓ Unlocked" : "Locked"}
+      <span
+        className={`text-xs font-semibold ${
+          unlocked ? "text-foreground" : "text-muted-foreground"
+        }`}
+      >
+        {label}
+      </span>
+      <span
+        className={`ml-auto text-xs font-bold ${
+          unlocked ? "text-primary" : "text-muted-foreground/50"
+        }`}
+      >
+        {unlocked ? "✓" : "—"}
       </span>
     </div>
   );

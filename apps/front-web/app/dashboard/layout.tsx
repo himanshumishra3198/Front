@@ -61,17 +61,17 @@ export default function DashboardLayout({
       {/* Left Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-border/50 bg-card/50 backdrop-blur transition-transform duration-200 ease-in-out lg:translate-x-0",
+          "fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-border/40 bg-gradient-to-b from-card/60 to-card/40 backdrop-blur-md transition-transform duration-200 ease-in-out lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b border-border/30 px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/20">
+          <Link href="/dashboard" className="flex items-center gap-2 group">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow">
               <Zap className="size-5 text-primary" />
             </div>
-            <span className="font-display text-lg font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <span className="font-display text-base font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               frontXO
             </span>
           </Link>
@@ -87,7 +87,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-0.5 p-4">
           {sidebarItems.map((item) => {
             const isActive =
               item.href === "/dashboard"
@@ -99,14 +99,14 @@ export default function DashboardLayout({
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200",
                   isActive
-                    ? "bg-primary/15 text-primary"
-                    : "text-foreground/70 hover:bg-primary/10 hover:text-foreground",
+                    ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary shadow-lg shadow-primary/20"
+                    : "text-foreground/60 hover:bg-background/50 hover:text-foreground/90",
                 )}
               >
-                <item.icon className="size-5" />
-                <span>{item.label}</span>
+                <item.icon className="size-5 flex-shrink-0" />
+                <span className="truncate">{item.label}</span>
               </Link>
             );
           })}
@@ -116,14 +116,14 @@ export default function DashboardLayout({
         <div className="border-t border-border/30 p-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-primary/10">
-                <Avatar className="size-9 border border-primary/20">
-                  <AvatarFallback className="bg-primary/10 text-primary font-bold">
+              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-all duration-200 hover:bg-background/50 group">
+                <Avatar className="size-9 border border-primary/30 shadow-sm shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-bold">
                     JD
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 truncate">
-                  <p className="text-sm font-medium">John Doe</p>
+                  <p className="text-xs font-bold">John Doe</p>
                   <p className="truncate text-xs text-muted-foreground">
                     Level 8
                   </p>
@@ -157,12 +157,12 @@ export default function DashboardLayout({
 
       {/* Main content area */}
       <div className="flex flex-1 flex-col lg:pl-64">
-        {/* Top navbar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/30 bg-card/50 backdrop-blur px-4 lg:px-8">
+        {/* Top navbar - sticky with clear separation */}
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/40 bg-gradient-to-r from-background/80 to-background/70 backdrop-blur-xl px-4 lg:px-6 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden text-foreground/70 hover:text-foreground hover:bg-background/50"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="size-5" />
@@ -171,32 +171,42 @@ export default function DashboardLayout({
 
           <div className="flex-1" />
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative text-foreground/60 hover:text-foreground hover:bg-background/50 transition-all"
+            >
               <Bell className="size-5" />
-              <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
+              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary shadow-lg shadow-primary/60" />
             </Button>
 
             {/* Messages */}
-            <Button variant="ghost" size="icon">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-foreground/60 hover:text-foreground hover:bg-background/50 transition-all"
+            >
               <MessageCircle className="size-5" />
             </Button>
 
             {/* XP/Level */}
-            <div className="hidden items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5 sm:flex">
+            <div className="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-primary/15 to-primary/5 px-3 py-1.5 sm:flex border border-primary/20 shadow-lg shadow-primary/10">
               <Zap className="size-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">
-                Level 8
-              </span>
+              <span className="text-xs font-bold text-primary">Level 8</span>
             </div>
 
             {/* User Avatar */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="size-8 border border-primary/20">
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-background/50 transition-all"
+                >
+                  <Avatar className="size-8 border border-primary/30 shadow-sm shadow-primary/20 hover:shadow-primary/40 transition-shadow">
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-bold text-xs">
                       JD
                     </AvatarFallback>
                   </Avatar>
@@ -227,16 +237,16 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Page content with 3-column layout */}
-        <main className="flex-1 overflow-auto">
-          <div className="flex h-full gap-6 p-4 lg:p-8">
-            {/* Center column */}
-            <div className="flex-1 min-w-0">{children}</div>
+        {/* Page content with proper container and spacing */}
+        <main className="flex-1 overflow-auto bg-background">
+          <div className="mx-auto max-w-7xl px-4 py-8 lg:px-6">
+            <div className="flex gap-8">
+              {/* Center column - dominates the layout */}
+              <div className="flex-1 min-w-0">{children}</div>
 
-            {/* Right social panel - hidden on mobile/tablet */}
-            <div className="hidden xl:block w-72 flex-shrink-0">
-              <div className="sticky top-24">
-                <div className="space-y-4">
+              {/* Right social panel - fixed width, hidden on smaller screens */}
+              <div className="hidden xl:block w-80 flex-shrink-0">
+                <div className="sticky top-24">
                   {/* This will be populated by child pages */}
                 </div>
               </div>
