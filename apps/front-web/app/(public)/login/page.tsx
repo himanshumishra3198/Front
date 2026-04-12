@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@repo/ui";
 import { Input } from "@repo/ui";
-import { Label } from "@repo/ui";
-import { AuthFormWrapper } from "../../components/features/auth-form-wrapper";
+import { AuthFormWrapper } from "../../../components/features/auth-form-wrapper";
 import { Field, FieldGroup, FieldLabel } from "@repo/ui";
 import { X } from "lucide-react";
-import { useAuthStore } from "../../stores/auth.store";
+import { useAuthStore } from "../../../stores/auth.store";
 
 export default function LoginPage() {
   const router = useRouter();

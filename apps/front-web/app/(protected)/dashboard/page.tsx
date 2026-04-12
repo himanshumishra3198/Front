@@ -4,7 +4,17 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui";
 import { Button } from "@repo/ui";
 import { Avatar, AvatarFallback } from "@repo/ui";
-import { Gamepad2, Heart, Zap, MessageSquare, Play } from "lucide-react";
+import {
+  Gamepad2,
+  Heart,
+  Zap,
+  MessageSquare,
+  Play,
+  ChessKnight,
+} from "lucide-react";
+import axios from "axios";
+import { useAuthStore } from "../../../stores/auth.store";
+import QuickMatchCard from "../../../components/dashboard/quick-match-card";
 
 const mockActiveGames = [
   {
@@ -81,9 +91,16 @@ export default function DashboardPage() {
   const [matchState, setMatchState] = useState<"idle" | "searching" | "found">(
     "idle",
   );
+  const { token } = useAuthStore();
 
-  const handleFindMatch = () => {
+  const handleFindMatch = async () => {
     setMatchState("searching");
+    const game = await axios.post("/api/matchmaking/create-game", {
+      body: { gameType: "chess" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setTimeout(() => setMatchState("found"), 2000);
   };
 
@@ -102,70 +119,7 @@ export default function DashboardPage() {
         </div>
 
         {/* A) Quick Match Card */}
-        <Card className="border border-primary/20 bg-gradient-to-br from-primary/15 via-card to-card/80 overflow-hidden shadow-lg shadow-primary/5 hover:shadow-primary/10 transition-shadow">
-          <CardHeader className="pb-5">
-            <CardTitle className="font-display text-2xl font-bold tracking-tight flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 shadow-lg shadow-primary/20">
-                <Gamepad2 className="size-6 text-primary" />
-              </div>
-              Play Chess
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <p className="text-sm text-muted-foreground font-medium">
-              Find a match and start connecting through gameplay
-            </p>
-
-            {matchState === "idle" && (
-              <Button
-                size="lg"
-                className="w-full font-semibold shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all duration-300 bg-gradient-to-r from-primary to-primary/90"
-                onClick={handleFindMatch}
-              >
-                Find Match
-              </Button>
-            )}
-
-            {matchState === "searching" && (
-              <Button size="lg" disabled className="w-full font-semibold">
-                <span className="animate-spin mr-2">⌛</span>
-                Searching…
-              </Button>
-            )}
-
-            {matchState === "found" && (
-              <div className="space-y-3 bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-primary/20 shadow-lg shadow-primary/10">
-                <p className="text-sm font-semibold text-primary">
-                  Match Found!
-                </p>
-                <div className="flex items-center gap-3 bg-background/50 p-3 rounded-lg">
-                  <Avatar className="size-12 border-2 border-primary/40 shadow-lg shadow-primary/20">
-                    <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-primary font-bold">
-                      EW
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold text-sm">Emma Watson</p>
-                    <p className="text-xs text-muted-foreground">
-                      Rating: 1620
-                    </p>
-                  </div>
-                </div>
-                <Button className="w-full font-semibold shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all bg-gradient-to-r from-primary to-primary/90">
-                  <Play className="size-4 mr-2" />
-                  Start Game
-                </Button>
-                <Button
-                  className="w-full font-medium text-foreground/80 hover:text-foreground"
-                  variant="ghost"
-                  onClick={() => setMatchState("idle")}
-                >
-                  Skip
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <QuickMatchCard gameType="chess" />
 
         {/* B) Active Games Section */}
         <Card className="border border-border/40 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-md shadow-lg shadow-black/10">

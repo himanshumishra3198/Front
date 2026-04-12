@@ -14,8 +14,8 @@ import { Input } from "@repo/ui";
 import { Button } from "@repo/ui";
 import { Badge } from "@repo/ui";
 import { Check, AlertCircle } from "lucide-react";
-import { useDebounceUsername } from "../../hooks";
-import { useAuthStore } from "../../stores/auth.store";
+import { useDebounceUsername } from "../../../hooks";
+import { useAuthStore } from "../../../stores/auth.store";
 
 type ValidationState = "idle" | "error" | "success" | "checking" | "taken";
 

@@ -8,7 +8,7 @@ export const matchmakingRouter = new Hono();
 
 matchmakingRouter.use("*", authMiddleware);
 
-matchmakingRouter.post("/join", authMiddleware, async (c) => {
+matchmakingRouter.post("/create-game", authMiddleware, async (c) => {
   const userId = c.get("userId");
   const body = await c.req.json();
 
